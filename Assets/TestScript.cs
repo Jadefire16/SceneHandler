@@ -38,6 +38,7 @@ public class TestScript : MonoBehaviour
             manager.UnloadSceneAsync(index - 1);
             index--;
         }
+        
     }
 
 }

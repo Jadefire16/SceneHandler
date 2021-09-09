@@ -16,6 +16,10 @@ namespace JadesToolkit
 
         public SceneData MainScene { get; private set; }
 
+        public int SceneCount { get; private set; }
+
+        public int ActiveSceneCount => activeScenes.Count;
+
         private static SceneHandler instance; // I still hate Unity singletons
         public static SceneHandler Manager
         {
@@ -30,9 +34,12 @@ namespace JadesToolkit
                 return instance;
             }
         }
+        
+        [SerializeField, Tooltip("This doesn't need to be an exact number though its fine if it is")] 
+        private int approximateScenes = 4;
 
-        private Dictionary<string, int> scenePairs = new Dictionary<string, int>(2);
-        private Dictionary<int, SceneData> sceneDatas = new Dictionary<int, SceneData>(2);
+        private Dictionary<string, int> scenePairs;
+        private Dictionary<int, SceneData> sceneDatas;
         
         private List<SceneData> activeScenes = new List<SceneData>(4);
 
@@ -46,33 +53,23 @@ namespace JadesToolkit
             }
             instance = this;
             DontDestroyOnLoad(gameObject);
-            
-            InitializeScenes();
+            sceneDatas = new Dictionary<int, SceneData>(approximateScenes);
+            scenePairs = new Dictionary<string, int>(approximateScenes);
+            InitializeScenes();        
         }
 
-        private void InitializeScenes()
+
+        /// <summary>
+        /// Sets the specified scene if active if it's currently loaded
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns>Will return true is specified scene is loaded, false otherwise</returns>
+        public bool SetMainScene(int index)
         {
-            int scenesInBuild = SceneManager.sceneCountInBuildSettings;
-            var currentScene = SceneManager.GetActiveScene();
-            for (int i = 0; i < scenesInBuild; i++)
-            {
-                string pathToScene = SceneUtility.GetScenePathByBuildIndex(i);
-                string name = System.IO.Path.GetFileNameWithoutExtension(pathToScene); // Unity really needs to fix their bullshit
-                var data = new SceneData(name, i);
-                if (data.Name.Equals(string.Empty) || data.Index < 0)
-                {
-                    Debug.LogError($"Attempted to load an empty scene! Skipping scene at index: {i}");
-                    continue;
-                }
-                scenePairs.Add(data.Name, data.Index); // Map keys from string to int for "faster" fetching for a more user firendly interface
-                sceneDatas.Add(data.Index, data);
-            }
-            sceneDatas.TryGetValue(currentScene.buildIndex, out SceneData value);
-            MainScene = value ?? sceneDatas[0];
-            activeScenes.Add(MainScene);
-#if UNITY_EDITOR
-            Debug.Log($"Initialized {scenesInBuild} Scenes and set {currentScene.name} as Main Scene!");
-#endif
+            if (index < 0 || index > sceneDatas.Count)
+                return false;
+            MainScene = sceneDatas[index];
+            return SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(index));
         }
 
         /// <summary>
@@ -114,7 +111,10 @@ namespace JadesToolkit
             SceneLoaded?.Invoke(scene);
             yield return null;
         }
-
+        /// <summary>
+        /// Unloads a scene specified by the string
+        /// </summary>
+        /// <param name="key">Correlates to the scene name</param>
         public void UnloadSceneAsync(string key)
         {
             if (scenePairs.TryGetValue(key, out int index))
@@ -123,6 +123,10 @@ namespace JadesToolkit
                 throw new ArgumentException("Key was not present!");
         }
 
+        /// <summary>
+        /// Unloads a scene using the given index
+        /// </summary>
+        /// <param name="index">Correlates to the build index</param>
         public void UnloadSceneAsync(int index)
         {
             sceneDatas.TryGetValue(index, out SceneData data);
@@ -144,6 +148,43 @@ namespace JadesToolkit
             SceneUnloaded?.Invoke(scene);
             yield return null;
         }
+
+        private void InitializeScenes()
+        {
+            int scenesInBuild = SceneManager.sceneCountInBuildSettings;
+            var currentScene = SceneManager.GetActiveScene();
+            for (int i = 0; i < scenesInBuild; i++)
+            {
+                string pathToScene = SceneUtility.GetScenePathByBuildIndex(i);
+                string name = System.IO.Path.GetFileNameWithoutExtension(pathToScene); // Unity really needs to fix their bullshit
+                var data = new SceneData(name, i);
+                if (data.Name.Equals(string.Empty) || data.Index < 0)
+                {
+                    Debug.LogError($"Attempted to load an empty scene! Skipping scene at index: {i}");
+                    continue;
+                }
+                scenePairs.Add(data.Name, data.Index); // Map keys from string to int for "faster" fetching for a more user firendly interface
+                sceneDatas.Add(data.Index, data);
+                SceneCount += 1;
+            }
+            sceneDatas.TryGetValue(currentScene.buildIndex, out SceneData value);
+            MainScene = value ?? sceneDatas[0];
+            activeScenes.Add(MainScene);
+#if UNITY_EDITOR
+            Debug.Log($"Initialized {scenesInBuild} Scenes and set {currentScene.name} as Main Scene!");
+#endif
+        }
+
+        [Obsolete("Using this function is not advised, use LoadSceneAsync instead")]
+        public void LoadSceneStatic(string key)
+        {
+            if (scenePairs.TryGetValue(key, out int index))
+                LoadSceneStatic(index);
+            else
+                throw new ArgumentException("Key was not present!");
+        }
+        [Obsolete("Using this function is not advised, use LoadSceneAsync instead")]
+        public void LoadSceneStatic(int index) => SceneManager.LoadScene(index);
 
     }
 }
