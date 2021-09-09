@@ -16,7 +16,7 @@ namespace JadesToolkit
 
         public SceneData MainScene { get; private set; }
 
-        private static SceneHandler instance; // I stil hate Unity singletons
+        private static SceneHandler instance; // I still hate Unity singletons
         public static SceneHandler Manager
         {
             get
