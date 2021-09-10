@@ -13,7 +13,7 @@ Developed in Unity Version: 2019.4.28
 - Setup environment as specified in provided link
 
 #### Package Manager:
-- Download package from /Packages folder.
+- Download package from /Package folder.
 - Open Unity
 - Nagivate to Assets -> Import Package -> Custom Package
 - Select downloaded package
