@@ -56,8 +56,7 @@ There are 6 events fired at different points during a scene load cycle, they are
 - SceneLoaded -> fired when scene unloading has finished, contains an object which holds the name & index of the scene
 
 ##### Properties
-Unfortunately there isn't much functionality here yet, the one being:
-- MainScene -> The scene in which the SceneHandler object was originally instantiated
+- MainScene -> The current "Main" scene in which game objects will be instantiated
 
 
 ### Addons
