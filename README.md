@@ -50,9 +50,9 @@ int -> index;
 ##### Events
 There are 6 events fired at different points during a scene load cycle, they are:
 - SceneLoadStart -> When the scene loading has started
-- SceneLoading -> Will by fired every frame containing the current percentage of scene loading
+- SceneLoading -> Will be fired every frame containing the current percentage of scene loading
 - SceneLoaded -> When the scene loading has finished containing an object which holds the name & index of the scene
-- SceneUnloading -> Will by fired every frame containing the current percentage of scene unloading
+- SceneUnloading -> Will be fired every frame containing the current percentage of scene unloading
 - SceneLoaded -> fired when scene unloading has finished, contains an object which holds the name & index of the scene
 
 ##### Properties
