@@ -23,9 +23,9 @@ Developed in Unity Version: 2019.4.28
 ## Usage
 #
 ### Core
-The SceneHandler can be placed on an object, it is a Singleton and thus should only ever be placed on one object. To use it simply call SceneHandler.Manager and it will either fetch the current active instance.
+The SceneHandler can be placed on an object, it is a Singleton and thus should only ever be placed on one object. To use it simply call SceneHandler.Manager and it will either fetch the current active instance or in the event an instance isn't assigned or found, it will generate one as a failsafe.
 
-There are a few different functions and properties you can choose from and a few options for each. Let's go over them.
+There are a few different functions and properties you can choose from and a few options for each, some of which are listed here! Most of the functions and properties are documented as well so you can read about them by hovering over the function in most IDE's
 
 ##### LoadSceneAsync
 This method will allow you to load a method either using the name of the scene or the scene's buildIndex, preferably the latter, in an "asyncronous" like fashion. However this is not to be confused with actual C# async methods and does not need to be awaited.
@@ -62,5 +62,5 @@ There are 6 events fired at different points during a scene load cycle, they are
 ### Addons
 #
 ##### SceneLoadTrigger
-this simple script simply shows how you can leverage some of the functionality of the SceneHandler.
+This simple script shows how you can leverage some of the functionality of the SceneHandler.
 When dragged onto an object this trigger will generate a trigger collider and provide the specified object a few functionalities. These include the ability to trigger scene loading and unloading when an object enters the trigger. Object filtering to ensure unwanted objects don't fire the trigger (using Layermasks). and a reset or destroy functionality when the trigger has been activated, allowing you to either reset the trigger after a set time or simply destroy the object.
