@@ -53,7 +53,8 @@ There are 6 events fired at different points during a scene load cycle, they are
 - SceneLoading -> Will be fired every frame containing the current percentage of scene loading
 - SceneLoaded -> When the scene loading has finished containing an object which holds the name & index of the scene
 - SceneUnloading -> Will be fired every frame containing the current percentage of scene unloading
-- SceneLoaded -> fired when scene unloading has finished, contains an object which holds the name & index of the scene
+- SceneUnloading -> Will be fired every frame containing the current percentage of scene unloading
+- SceneUnloaded -> fired when scene unloading has finished, contains an object which holds the name & index of the scene
 
 ##### Properties
 - MainScene -> The current "Main" scene in which game objects will be instantiated
